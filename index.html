@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alby Symphony Master | Pro</title>
+    <style>
+        :root {
+            --bg: #050508;
+            --glass: rgba(15, 15, 20, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #00f2ff;
+            --text: #ffffff;
+            --sub-text: #8b9dc3;
+        }
+
+        body {
+            margin: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050508 100%);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .studio-container {
+            width: 950px;
+            background: var(--glass);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+        }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+        }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        }
+
+        .module {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        h3 {
+            font-size: 10px; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 2px; margin: 0;
+        }
+
+        label { font-size: 11px; color: var(--sub-text); font-weight: 600; }
+
+        select, input[type="range"] {
+            width: 100%; background: #000; border: 1px solid #333;
+            color: white; padding: 6px; border-radius: 6px; font-size: 12px;
+        }
+
+        .transport-bar {
+            margin-top: 30px; display: flex; align-items: center;
+            gap: 20px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #00f2ff, #007aff);
+            color: #000; border: none; padding: 12px 40px;
+            border-radius: 100px; font-weight: 800; cursor: pointer;
+            transition: 0.2s; min-width: 160px;
+        }
+
+        .play-btn.active { background: #ff3b30; color: #fff; }
+
+        .viz-canvas {
+            flex-grow: 1; height: 40px; background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="studio-container">
+    <header>
+        <h1 style="margin:0; font-size: 22px; letter-spacing: 2px;">ALBY SYMPHONY MASTER <span style="font-weight:100; opacity:0.5;">PRO</span></h1>
+        <div id="status" style="font-family: monospace; color: var(--accent);">STANDBY</div>
+    </header>
+
+    <div class="grid">
+        <div class="module">
+            <h3>Theory</h3>
+            <div>
+                <label>Key & Scale</label>
+                <select id="musicKey"><option value="C">C</option><option value="D">D</option><option value="G">G</option><option value="A">A</option></select>
+                <select id="musicScale" style="margin-top:5px;">
+                    <option value="minor">Minor</option><option value="major">Major</option>
+                    <option value="dorian">Dorian</option><option value="pentatonic">Pentatonic</option>
+                </select>
+            </div>
+            <div>
+                <label>Time Sig</label>
+                <select id="timeSig">
+                    <option value="4/4">4/4 Common</option><option value="3/4">3/4 Waltz</option>
+                    <option value="5/4">5/4 Odd</option><option value="7/8">7/8 Prog</option>
+                </select>
+            </div>
+            <div>
+                <label>BPM: <span id="bpmVal">110</span></label>
+                <input type="range" id="bpm" min="60" max="180" value="110">
+            </div>
+        </div>
+
+        <div class="module">
+            <h3>Synthesis</h3>
+            <div>
+                <label>Bass Engine</label>
+                <select id="bassSynth"><option value="sine">Deep Sine</option><option value="square">Fat Square</option><option value="sawtooth">Power Saw</option></select>
+            </div>
+            <div>
+                <label>Rhythm Engine</label>
+                <select id="rhythmSynth"><option value="square">Dirty Pulse</option><option value="triangle">Soft Tri</option><option value="sawtooth">Bright Saw</option></select>
+            </div>
+            <div>
+                <label>Lead Engine</label>
+                <select id="leadSynth"><option value="sawtooth">Crystal Saw</option><option value="sine">Pure Sine</option></select>
+            </div>
+        </div>
+
+        <div class="module">
+            <h3>Rhythm Logic</h3>
+            <div>
+                <label>Rhythm Complexity</label>
+                <input type="range" id="rhythmDensity" min="0" max="100" value="70">
+            </div>
+            <div>
+                <label>Melody Humanize</label>
+                <input type="range" id="humanize" min="0" max="100" value="65">
+            </div>
+            <button id="regenPatterns" style="background:rgba(255,255,255,0.1); color:white; border:none; padding:8px; border-radius:5px; cursor:pointer; font-size:10px;">FORCE REGEN PATTERNS</button>
+        </div>
+
+        <div class="module">
+            <h3>Drum Rack</h3>
+            <div>
+                <label>Kick Style</label>
+                <select id="kickStyle"><option value="normal">Analog Punch</option><option value="heavy">Sub Blow</option><option value="off">Mute</option></select>
+            </div>
+            <div>
+                <label>Snare / Clap</label>
+                <select id="snareStyle"><option value="normal">Standard</option><option value="tight">Tight</option><option value="off">Mute</option></select>
+            </div>
+            <div>
+                <label>Hi-Hat</label>
+                <select id="hihatStyle"><option value="8ths">8th Notes</option><option value="16ths">16th Shuffle</option><option value="off">Mute</option></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="transport-bar">
+        <button class="play-btn" id="playBtn">INITIALIZE SYSTEM</button>
+        <canvas id="viz" class="viz-canvas"></canvas>
+        <div style="width: 120px;">
+            <label>Master Vol</label>
+            <input type="range" id="masterVol" min="0" max="100" value="60">
+        </div>
+    </div>
+</div>
+
+<script>
+    // CORE ENGINE - Based on the "Cave Escape" Logic
+    class ProSymphony {
+        constructor() {
+            this.ctx = null;
+            this.isPlaying = false;
+            this.currentBeat = 0;
+            this.nextNoteTime = 0;
+            this.barLength = 4;
+            
+            this.noteFreqs = {'C': 130.81, 'D': 146.83, 'E': 164.81, 'F': 174.61, 'G': 196.00, 'A': 220.00, 'B': 246.94};
+            this.scales = {
+                major: [0, 2, 4, 5, 7, 9, 11],
+                minor: [0, 2, 3, 5, 7, 8, 10],
+                pentatonic: [0, 3, 5, 7, 10],
+                dorian: [0, 2, 3, 5, 7, 9, 10]
+            };
+
+            this.patterns = { bass: [], rhythm: [], lead: [] };
+        }
+
+        init() {
+            if (this.ctx) return;
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.masterGain = this.ctx.createGain();
+            this.analyser = this.ctx.createAnalyser();
+            this.masterGain.connect(this.analyser);
+            this.analyser.connect(this.ctx.destination);
+            this.regeneratePatterns();
+        }
+
+        getScaleNotes(octave = 0) {
+            const key = document.getElementById('musicKey').value;
+            const scale = document.getElementById('musicScale').value;
+            const rootFreq = this.noteFreqs[key];
+            const intervals = this.scales[scale];
+            return intervals.map(i => rootFreq * Math.pow(2, (i + octave * 12) / 12));
+        }
+
+        // The "Secret Sauce" from Cave Escape
+        regeneratePatterns() {
+            const [beats] = document.getElementById('timeSig').value.split('/').map(Number);
+            this.barLength = beats;
+            const density = document.getElementById('rhythmDensity').value / 100;
+
+            // Bass: Strong root-note focus
+            this.patterns.bass = Array.from({length: beats * 2}, (_, i) => 
+                (i % 2 === 0) ? { note: 0, octave: -1, dur: 0.4 } : (Math.random() < 0.3 ? { note: 2, octave: -1, dur: 0.2 } : null)
+            );
+
+            // Rhythm: Polyphonic chord stabs (The part you said was missing)
+            this.patterns.rhythm = Array.from({length: beats * 2}, (_, i) => 
+                (i % 2 === 0 || Math.random() < density) ? { 
+                    notes: [0, 2, 4].map(n => (n + Math.floor(i/4) * 2) % 7),
+                    octave: 0, dur: 0.15 
+                } : null
+            );
+
+            // Lead: Wandering melody
+            let lastNote = 2;
+            this.patterns.lead = Array.from({length: beats * 4}, () => {
+                if (Math.random() > (document.getElementById('humanize').value / 100)) {
+                    lastNote = Math.max(0, Math.min(6, lastNote + (Math.floor(Math.random() * 3) - 1)));
+                    return { note: lastNote, octave: 1, dur: 0.2 };
+                }
+                return null;
+            });
+        }
+
+        playNote(freq, type, time, dur, vol) {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, time);
+            g.gain.setValueAtTime(0, time);
+            g.gain.linearRampToValueAtTime(vol, time + 0.01);
+            g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+            osc.connect(g); g.connect(this.masterGain);
+            osc.start(time); osc.stop(time + dur);
+        }
+
+        playKick(time) {
+            const style = document.getElementById('kickStyle').value;
+            if (style === 'off') return;
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.frequency.setValueAtTime(style === 'heavy' ? 180 : 150, time);
+            osc.frequency.exponentialRampToValueAtTime(40, time + 0.1);
+            g.gain.setValueAtTime(0.8, time);
+            g.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+            osc.connect(g); g.connect(this.masterGain);
+            osc.start(time); osc.stop(time + 0.2);
+        }
+
+        playSnare(time) {
+            if (document.getElementById('snareStyle').value === 'off') return;
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(200, time);
+            osc.frequency.exponentialRampToValueAtTime(80, time + 0.05);
+            g.gain.setValueAtTime(0.4, time);
+            g.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+            osc.connect(g); g.connect(this.masterGain);
+            osc.start(time); osc.stop(time + 0.1);
+        }
+
+        scheduler() {
+            while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
+                const bpm = document.getElementById('bpm').value;
+                const secondsPerBeat = 60.0 / bpm / 4;
+                this.runLogic(this.currentBeat, this.nextNoteTime);
+                this.nextNoteTime += secondsPerBeat;
+                this.currentBeat++;
+                // Auto-regen every 16 bars just like the game
+                if (this.currentBeat % (this.barLength * 16) === 0) this.regeneratePatterns();
+            }
+        }
+
+        runLogic(beat, time) {
+            const beatInBar = beat % (this.barLength * 4);
+            const notes = this.getScaleNotes();
+
+            // Drums
+            if (beatInBar % 4 === 0) this.playKick(time);
+            if (beatInBar % 8 === 4) this.playSnare(time);
+            if (document.getElementById('hihatStyle').value !== 'off' && beat % 2 === 0) {
+                const g = this.ctx.createGain();
+                const osc = this.ctx.createOscillator(); // Simple noise alt
+                osc.type = 'square'; osc.frequency.value = 10000;
+                g.gain.setValueAtTime(0.05, time); g.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
+                osc.connect(g); g.connect(this.masterGain);
+                osc.start(time); osc.stop(time + 0.04);
+            }
+
+            // Bass
+            const bass = this.patterns.bass[Math.floor(beatInBar/2) % this.patterns.bass.length];
+            if (beat % 2 === 0 && bass) {
+                this.playNote(this.getScaleNotes(bass.octave)[bass.note], document.getElementById('bassSynth').value, time, bass.dur, 0.3);
+            }
+
+            // Rhythm (The Missing Section)
+            const rhythm = this.patterns.rhythm[Math.floor(beatInBar/2) % this.patterns.rhythm.length];
+            if (beat % 2 === 0 && rhythm) {
+                rhythm.notes.forEach(n => {
+                    this.playNote(this.getScaleNotes(rhythm.octave)[n % 7], document.getElementById('rhythmSynth').value, time, rhythm.dur, 0.1);
+                });
+            }
+
+            // Lead
+            const lead = this.patterns.lead[beatInBar % this.patterns.lead.length];
+            if (lead) {
+                this.playNote(this.getScaleNotes(lead.octave)[lead.note], document.getElementById('leadSynth').value, time, lead.dur, 0.15);
+            }
+        }
+
+        toggle() {
+            this.init();
+            if (this.isPlaying) {
+                this.isPlaying = false;
+                clearInterval(this.timer);
+                this.ctx.suspend();
+                document.getElementById('playBtn').textContent = "INITIALIZE SYSTEM";
+                document.getElementById('playBtn').classList.remove('active');
+            } else {
+                this.isPlaying = true;
+                this.nextNoteTime = this.ctx.currentTime;
+                this.timer = setInterval(() => this.scheduler(), 25);
+                this.ctx.resume();
+                document.getElementById('playBtn').textContent = "SYSTEM LIVE";
+                document.getElementById('playBtn').classList.add('active');
+            }
+        }
+    }
+
+    const engine = new ProSymphony();
+    const canvas = document.getElementById('viz');
+    const vctx = canvas.getContext('2d');
+
+    document.getElementById('playBtn').addEventListener('click', () => engine.toggle());
+    document.getElementById('regenPatterns').addEventListener('click', () => engine.regeneratePatterns());
+    document.getElementById('bpm').addEventListener('input', (e) => document.getElementById('bpmVal').textContent = e.target.value);
+    document.getElementById('masterVol').addEventListener('input', (e) => {
+        if (engine.masterGain) engine.masterGain.gain.value = (e.target.value / 100) * 0.4;
+    });
+
+    function draw() {
+        requestAnimationFrame(draw);
+        if (!engine.analyser) return;
+        const data = new Uint8Array(engine.analyser.frequencyBinCount);
+        engine.analyser.getByteFrequencyData(data);
+        vctx.clearRect(0,0,canvas.width, canvas.height);
+        vctx.fillStyle = '#00f2ff';
+        for(let i=0; i<canvas.width; i+=2) {
+            const h = (data[i%128] / 255) * canvas.height;
+            vctx.fillRect(i, canvas.height - h, 1, h);
+        }
+    }
+    draw();
+</script>
+</body>
+</html>

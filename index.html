@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedural Music Generator</title>
+    <title>Alby Symphony Master Pro v2.0</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f0f20 100%);
+            background: linear-gradient(135deg, #050508 0%, #0a0a12 50%, #080810 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #fff;
+            color: #ccc;
             padding: 20px;
         }
         
@@ -26,18 +26,18 @@
         }
         
         h1 {
-            font-size: 42px;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 38px;
+            color: #7a8899;
             margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         
         .subtitle {
-            color: rgba(255,255,255,0.5);
-            font-size: 16px;
-            letter-spacing: 3px;
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
         }
         
         .main-controls {
@@ -48,77 +48,106 @@
         }
         
         .play-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border: none;
-            color: white;
+            background: linear-gradient(135deg, #1a3a2a, #0d2818);
+            border: 1px solid #2a4a3a;
+            color: #5a9a7a;
             padding: 18px 50px;
-            border-radius: 50px;
-            font-size: 20px;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: 2px;
         }
         
         .play-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #2a4a3a, #1a3a2a);
+            box-shadow: 0 5px 20px rgba(90, 154, 122, 0.2);
         }
         
         .play-btn.playing {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #3a1a1a, #2a0d0d);
+            border-color: #5a2a2a;
+            color: #aa6666;
         }
         
         .play-btn.playing:hover {
-            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 5px 20px rgba(170, 102, 102, 0.2);
         }
         
         .randomize-btn {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            border: none;
-            color: white;
+            background: linear-gradient(135deg, #1a1a2a, #0d0d18);
+            border: 1px solid #2a2a4a;
+            color: #7a7aaa;
             padding: 18px 35px;
-            border-radius: 50px;
-            font-size: 18px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .randomize-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+            background: linear-gradient(135deg, #2a2a4a, #1a1a3a);
+            box-shadow: 0 5px 20px rgba(122, 122, 170, 0.2);
+        }
+        
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
         }
         
         .panels {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
         
+        @media (max-width: 900px) {
+            .panels {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .panel {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
+            background: rgba(10,10,15,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
             padding: 20px;
         }
         
         .panel h2 {
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #8b9dc3;
+            letter-spacing: 3px;
+            color: #556;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         
-        .panel h2 span {
-            font-size: 18px;
+        .panel h2 img {
+            width: 18px;
+            height: 18px;
+            opacity: 0.5;
         }
         
         .control-row {
@@ -129,44 +158,49 @@
         }
         
         .control-row label {
-            color: rgba(255,255,255,0.8);
-            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
         }
         
         .control-row select {
-            background: rgba(20, 20, 40, 0.8);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
+            background: #0a0a10;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #999;
             padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 4px;
+            font-size: 13px;
             min-width: 120px;
             cursor: pointer;
         }
         
+        .control-row select:focus {
+            outline: none;
+            border-color: #445;
+        }
+        
         .control-row select option {
-            background: #1a1a2e;
-            color: #fff;
+            background: #0a0a10;
+            color: #999;
         }
         
         .control-row input[type="range"] {
             width: 100px;
             cursor: pointer;
-            accent-color: #8b5cf6;
+            accent-color: #556;
         }
         
         .control-value {
-            color: #4ade80;
-            font-size: 14px;
+            color: #6a8;
+            font-size: 13px;
             min-width: 50px;
             text-align: right;
             font-weight: bold;
         }
         
         .track-panel {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
+            background: rgba(5,5,8,0.6);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 6px;
             padding: 15px;
             margin-bottom: 12px;
         }
@@ -180,7 +214,8 @@
         
         .track-name {
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
+            color: #778;
         }
         
         .track-controls {
@@ -190,24 +225,25 @@
         }
         
         .mute-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #556;
             padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
+            border-radius: 3px;
+            font-size: 10px;
             cursor: pointer;
             transition: all 0.2s;
+            letter-spacing: 1px;
         }
         
         .mute-btn:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
         }
         
         .mute-btn.muted {
-            background: rgba(239, 68, 68, 0.3);
-            border-color: #ef4444;
-            color: #fca5a5;
+            background: rgba(120, 50, 50, 0.3);
+            border-color: #644;
+            color: #a88;
         }
         
         .track-row {
@@ -218,30 +254,30 @@
         }
         
         .track-row label {
-            color: rgba(255,255,255,0.6);
-            font-size: 12px;
+            color: rgba(255,255,255,0.35);
+            font-size: 11px;
             min-width: 60px;
         }
         
         .track-row select {
-            background: rgba(20, 20, 40, 0.6);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
+            background: #08080c;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #888;
             padding: 5px 8px;
-            border-radius: 6px;
-            font-size: 12px;
+            border-radius: 4px;
+            font-size: 11px;
             flex: 1;
         }
         
         .track-row input[type="range"] {
             flex: 1;
-            accent-color: #60a5fa;
+            accent-color: #445;
         }
         
         .visualizer-container {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
+            background: rgba(5,5,8,0.8);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 6px;
             padding: 15px;
             margin-bottom: 20px;
         }
@@ -250,7 +286,8 @@
             width: 100%;
             height: 120px;
             display: block;
-            border-radius: 8px;
+            border-radius: 4px;
+            background: #050508;
         }
         
         .beat-indicator {
@@ -261,23 +298,23 @@
         }
         
         .beat-dot {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
             transition: all 0.1s;
         }
         
         .beat-dot.active {
-            background: #4ade80;
-            border-color: #4ade80;
-            box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+            background: #3a5a4a;
+            border-color: #4a6a5a;
+            box-shadow: 0 0 10px rgba(60, 100, 80, 0.4);
         }
         
         .beat-dot.downbeat {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
         }
         
         .info-bar {
@@ -285,8 +322,9 @@
             justify-content: center;
             gap: 40px;
             padding: 15px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
+            background: rgba(5,5,8,0.6);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 6px;
             margin-top: 20px;
         }
         
@@ -295,64 +333,70 @@
         }
         
         .info-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
+            font-size: 10px;
+            color: rgba(255,255,255,0.25);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
         
         .info-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
-            color: #60a5fa;
+            color: #5a7a6a;
         }
         
         .presets {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             margin-top: 10px;
         }
         
         .preset-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: rgba(255,255,255,0.8);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4);
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 11px;
             cursor: pointer;
             transition: all 0.2s;
+            letter-spacing: 1px;
         }
         
         .preset-btn:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
         }
         
         footer {
             text-align: center;
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.4);
-            font-size: 13px;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.2);
+            font-size: 11px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Alby Symphony Master Music Maker v2.0</h1>
-            <p class="subtitle">Procedural music compositions</p>
+            <h1>ALBY SYMPHONY MASTER PRO v2.0</h1>
+            <p class="subtitle">Infinite Algorithmic Compositions</p>
         </header>
         
         <div class="main-controls">
             <button class="play-btn" id="playBtn">
-                <span id="playIcon">▶</span>
+                <img src="resources/icon-play.png" alt="" class="btn-icon" id="playIcon">
                 <span id="playText">PLAY</span>
             </button>
-            <button class="randomize-btn" id="randomizeBtn">🎲 RANDOMIZE</button>
+            <button class="randomize-btn" id="randomizeBtn">
+                <img src="resources/icon-randomize.png" alt="" class="btn-icon">
+                RANDOMIZE
+            </button>
         </div>
         
         <div class="visualizer-container">
@@ -363,7 +407,7 @@
         <div class="panels">
             <!-- Music Theory Panel -->
             <div class="panel">
-                <h2><span>🎼</span> Music Theory</h2>
+                <h2><img src="resources/icon-theory.png" alt=""> Music Theory</h2>
                 <div class="control-row">
                     <label>Key</label>
                     <select id="musicKey">
@@ -425,7 +469,7 @@
             
             <!-- Master Panel -->
             <div class="panel">
-                <h2><span>🎚️</span> Master</h2>
+                <h2><img src="resources/icon-master.png" alt=""> Master</h2>
                 <div class="control-row">
                     <label>Master Volume</label>
                     <input type="range" id="masterVol" min="0" max="100" value="60">
@@ -459,7 +503,7 @@
             
             <!-- Bass Panel -->
             <div class="panel">
-                <h2><span>🎸</span> Bass</h2>
+                <h2><img src="resources/icon-bass.png" alt=""> Bass</h2>
                 <div class="track-panel">
                     <div class="track-header">
                         <span class="track-name">Bass Synth</span>
@@ -499,7 +543,7 @@
             
             <!-- Chords Panel -->
             <div class="panel">
-                <h2><span>🎹</span> Chords</h2>
+                <h2><img src="resources/icon-chords.png" alt=""> Chords</h2>
                 <div class="track-panel">
                     <div class="track-header">
                         <span class="track-name">Rhythm Synth</span>
@@ -540,7 +584,7 @@
             
             <!-- Lead Panel -->
             <div class="panel">
-                <h2><span>🎷</span> Lead</h2>
+                <h2><img src="resources/icon-lead.png" alt=""> Lead</h2>
                 <div class="track-panel">
                     <div class="track-header">
                         <span class="track-name">Lead Synth</span>
@@ -580,7 +624,7 @@
             
             <!-- Drums Panel -->
             <div class="panel">
-                <h2><span>🥁</span> Drums</h2>
+                <h2><img src="resources/icon-drums.png" alt=""> Drums</h2>
                 <div class="track-panel">
                     <div class="track-header">
                         <span class="track-name">Kick</span>
@@ -666,7 +710,7 @@
         </div>
         
         <footer>
-            Made with Web Audio API • Click anywhere to start audio context
+            Alby Symphony Master Pro v2.0 | Web Audio API | Click to initialize audio
         </footer>
     </div>
 
@@ -1155,7 +1199,7 @@
                     const dataArray = new Uint8Array(bufferLength);
                     this.analyser.getByteFrequencyData(dataArray);
                     
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                    ctx.fillStyle = 'rgba(5, 5, 8, 0.3)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
                     const barWidth = (canvas.width / bufferLength) * 2.5;
@@ -1164,8 +1208,8 @@
                     for (let i = 0; i < bufferLength; i++) {
                         const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
                         
-                        const hue = (i / bufferLength) * 120 + 200;
-                        ctx.fillStyle = `hsla(${hue}, 80%, 60%, 0.8)`;
+                        const brightness = 25 + (i / bufferLength) * 20;
+                        ctx.fillStyle = `rgba(${brightness + 20}, ${brightness + 40}, ${brightness + 30}, 0.7)`;
                         ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
                         
                         x += barWidth;
@@ -1215,7 +1259,7 @@
         playBtn.addEventListener('click', () => {
             const playing = music.toggle();
             playBtn.classList.toggle('playing', playing);
-            document.getElementById('playIcon').textContent = playing ? '⏹' : '▶';
+            document.getElementById('playIcon').src = playing ? 'resources/icon-stop.png' : 'resources/icon-play.png';
             document.getElementById('playText').textContent = playing ? 'STOP' : 'PLAY';
         });
         
